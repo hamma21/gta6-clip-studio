@@ -1,6 +1,6 @@
-streamlit>=1.40
-yt-dlp[default]
-pydub>=0.25.1
+streamlit
+yt-dlp
+pydub
+moviepy
 numpy
-faster-whisper==1.1.1
-av==12.3.0
+faster-whisper
