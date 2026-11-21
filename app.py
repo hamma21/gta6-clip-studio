@@ -46,6 +46,7 @@ MAX_VIDEO_MIN = int(os.environ.get("MAX_VIDEO_MIN", "240"))
 MAX_PARALLEL_JOBS = int(os.environ.get("MAX_PARALLEL_JOBS", "2"))
 FILE_TTL_MIN = int(os.environ.get("FILE_TTL_MIN", "60"))
 ENV_COOKIES = os.environ.get("YT_COOKIES_FILE", "")
+PLAYER_CLIENTS = [c.strip() for c in os.environ.get("YT_PLAYER_CLIENTS", "android,ios,web").split(",") if c.strip()]
 
 BLOCK_SEC = 5
 KEYWORD_BOOST = 40.0
@@ -151,7 +152,11 @@ def extract_audio(src: Path, dst: Path, sample_rate: int, start: float | None = 
 # YouTube (yt-dlp) helpers
 # ----------------------------------------------------------------------------
 def ydl_base(cookies: str | None) -> dict:
-    opts = {"quiet": True, "no_warnings": True, "noplaylist": True, "retries": 3}
+    opts = {
+        "quiet": True, "no_warnings": True, "noplaylist": True, "retries": 3,
+        # Multiple player clients = better chance of bypassing YouTube blocks on cloud IPs
+        "extractor_args": {"youtube": {"player_client": PLAYER_CLIENTS}},
+    }
     if cookies and Path(cookies).exists():
         opts["cookiefile"] = cookies
     return opts
